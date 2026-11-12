@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AI Chat Downloader (Poe Edition)",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Download and export Poe conversations locally as Markdown, HTML, or Plaintext",
   "minimum_chrome_version": "110",
   "permissions": [
