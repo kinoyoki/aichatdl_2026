@@ -6,7 +6,8 @@
   "minimum_chrome_version": "110",
   "permissions": [
     "activeTab",
-    "clipboardWrite"
+    "clipboardWrite",
+    "scripting"
   ],
   "host_permissions": [
     "https://chatgpt.com/*",
