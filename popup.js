@@ -37,11 +37,13 @@ document.getElementById('extractBtn').addEventListener('click', () => {
   log('Starting conversation extraction...');
   
   const format = document.querySelector('input[name="format"]:checked').value;
+  const includeAttachments = document.getElementById('includeAttachments').checked;
   log(`Selected format: ${format}`);
+  log(`Include attachments: ${includeAttachments}`);
 
   browserAPI.tabs.query({active: true, currentWindow: true}, (tabs) => {
     log(`Current URL: ${tabs[0].url}`);
-    browserAPI.tabs.sendMessage(tabs[0].id, {action: "extract", format}, response => {
+    browserAPI.tabs.sendMessage(tabs[0].id, {action: "extract", format, includeAttachments}, response => {
       if (browserAPI.runtime.lastError) {
         log(`Error: ${browserAPI.runtime.lastError.message}`);
         if (browserAPI.runtime.lastError.message.includes("Cannot access contents of url") ||

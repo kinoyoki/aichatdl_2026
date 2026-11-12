@@ -28,7 +28,7 @@ const FORMAT_HANDLERS = {
   }
 };
 
-function extractConversation(format) {
+function extractConversation(format, includeAttachments = true) {
   const logs = [];
   const log = message => {
     console.log(message);
@@ -39,8 +39,9 @@ function extractConversation(format) {
     const platform = detectPlatform();
     log(`Platform detected: ${platform}`);
     log(`Format selected: ${format}`);
+    log(`Include attachments: ${includeAttachments}`);
     
-    const messages = extractConversationFromPlatform(platform, format);
+    const messages = extractConversationFromPlatform(platform, format, includeAttachments);
     
     if (messages.length > 0) {
       const content = formatConversation(platform, messages, format);
@@ -62,14 +63,14 @@ function detectPlatform() {
   return PLATFORMS.UNKNOWN;
 }
 
-function extractConversationFromPlatform(platform, format) {
+function extractConversationFromPlatform(platform, format, includeAttachments = true) {
   const extractors = {
     [PLATFORMS.CHATGPT]: extractChatGPTConversation,
     [PLATFORMS.CLAUDE]: extractClaudeConversation,
     [PLATFORMS.POE]: extractPoeConversation
   };
 
-  return extractors[platform] ? extractors[platform](format) : [];
+  return extractors[platform] ? extractors[platform](format, includeAttachments) : [];
 }
 
 function extractChatGPTConversation(format) {
@@ -141,14 +142,14 @@ function extractPoeAttachments(messageEl, format) {
   return parts.join('\n');
 }
 
-function extractPoeConversation(format) {
+function extractPoeConversation(format, includeAttachments = true) {
   return Array.from(document.querySelectorAll('[class*="ChatMessage_chatMessage"]'))
     .map(messageEl => {
       const isUser = !!messageEl.querySelector('[class*="rightSideMessageWrapper"]');
       const speaker = isUser ? "User" : "AI";
       const contentEl = messageEl.querySelector('[class*="Markdown_markdownContainer"]');
       const bodyText = contentEl ? extractContent(contentEl, format) : '';
-      const attachText = extractPoeAttachments(messageEl, format);
+      const attachText = includeAttachments ? extractPoeAttachments(messageEl, format) : '';
 
       const combined = [bodyText, attachText].filter(Boolean).join('\n\n').trim();
       return combined.length > 0 ? [speaker, combined] : null;
@@ -559,7 +560,7 @@ function simplifyHtml(html) {
 
 browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "extract") {
-    sendResponse(extractConversation(request.format));
+    sendResponse(extractConversation(request.format, request.includeAttachments !== false));
   } else if (request.action === "detectPlatform") {
     sendResponse({ platform: detectPlatform() });
   }

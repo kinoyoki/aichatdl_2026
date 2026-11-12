@@ -79,6 +79,29 @@
             font-weight: bold;
         }
 
+        .attachment-option {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: var(--format-bg);
+            border: 1px solid var(--format-border);
+            border-radius: var(--border-radius);
+            font-size: 0.95em;
+        }
+
+        .attachment-option label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .attachment-option input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+
         .main-btn {
             display: block;
             width: 100%;
@@ -155,6 +178,13 @@
             <input type="radio" id="plaintext" name="format" value="plaintext">
             <label for="plaintext">Plaintext</label>
         </div>
+    </div>
+    
+    <div class="attachment-option">
+        <label for="includeAttachments">
+            <input type="checkbox" id="includeAttachments" checked>
+            Include file attachments (images/files)
+        </label>
     </div>
     
     <button id="extractBtn" class="main-btn">Extract Conversation</button>
